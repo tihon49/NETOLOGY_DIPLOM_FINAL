@@ -2,12 +2,10 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_rest_passwordreset.tokens import get_token_generator
 
 USER_TYPE_CHOICES = (
     ('shop', 'Магазин'),
-    ('buyer', 'Покупатель'),
-)
+    ('buyer', 'Покупатель'),)
 
 
 class UserManager(BaseUserManager):
@@ -22,6 +20,8 @@ class UserManager(BaseUserManager):
         """
         if not email:
             raise ValueError('The given email must be set')
+        if not password:
+            raise ValueError('Password must be provided')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -38,10 +38,10 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+        # if extra_fields.get('is_staff') is not True:
+        #     raise ValueError('Superuser must have is_staff=True.')
+        # if extra_fields.get('is_superuser') is not True:
+        #     raise ValueError('Superuser must have is_superuser=True.')
 
         return self._create_user(email, password, **extra_fields)
 
@@ -54,11 +54,11 @@ class User(AbstractUser):
     objects = UserManager()
     USERNAME_FIELD = 'email'
     email = models.EmailField(verbose_name='Email', max_length=40, unique=True)
-    username = models.CharField(_('username'), max_length=150, blank=True, null=True)
+    username = None
     company = models.CharField(verbose_name='Компания', max_length=40, blank=True)
     position = models.CharField(verbose_name='Должность', max_length=40, blank=True)
     is_active = models.BooleanField(
-        _('active'),
+        ('active'),
         default=False,
         help_text=_(
             'Designates whether this user should be treated as active.'
