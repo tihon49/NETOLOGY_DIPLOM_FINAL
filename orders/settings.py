@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     #MY APPS
     'accounts',
     'api',
+    'shop',
 
 ]
 
@@ -107,7 +108,6 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create': 'accounts.serializers.UserCreateSerializer',
         'user': 'accounts.serializers.UserCreateSerializer',
-        # 'current_user': 'accounts.serializers.CurrentUserSerializer',
     }
 }
 

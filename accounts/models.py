@@ -59,7 +59,7 @@ class User(AbstractUser):
     position = models.CharField(verbose_name='Должность', max_length=40, blank=True)
     is_active = models.BooleanField(
         ('active'),
-        default=False,
+        default=True,
         help_text=_(
             'Designates whether this user should be treated as active.'
             'Unselect this instead of deleting accounts.'
@@ -73,4 +73,4 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Список пользователей'
-        ordering = ('email',)
+        ordering = ['id']
