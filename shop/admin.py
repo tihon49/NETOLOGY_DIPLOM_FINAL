@@ -16,7 +16,7 @@ class ShopAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ShopAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'category']
 
 @admin.register(ProductInfo)
 class ShopAdmin(admin.ModelAdmin):

@@ -27,16 +27,17 @@ class ShopDetailView(APIView):
         return Response(serializer.data)
 
 
-class ShopDetailView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ShopDetailSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-
-    def get(self):
-        user = self.request.user
-        shop = Shop.objects.get(user = user)
-        serializer = ShopDetailSerializer(shop)
-        return Response(serializer.data)
+# class ShopDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     serializer_class = ShopDetailSerializer
+#
+#     def get_queryset(self):
+#         user = self.request.user
+#         return user
+#
+#     def get(self):
+#         user = self.request.user
+#         shop = Shop.objects.get(user = user)
+#         serializer = ShopDetailSerializer(shop)
+#         return Response(serializer.data)
 
 

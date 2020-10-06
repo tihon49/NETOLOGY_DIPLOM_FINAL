@@ -42,8 +42,8 @@ class ShopCreteSerializer(serializers.ModelSerializer):
 
 
 class ShopDetailSerializer(serializers.ModelSerializer):
-    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    user = serializers.SlugRelatedField(slug_field='email', read_only=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # user = serializers.SlugRelatedField(slug_field='email', read_only=True)
     category = ShopCreteSerializer
 
     class Meta:
