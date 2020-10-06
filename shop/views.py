@@ -20,9 +20,8 @@ class ShopsListView(generics.ListAPIView):
 
 
 class ShopDetailView(APIView):
-    def get(self, request):
-        user = request.user
-        shop = Shop.objects.get(user = user)
+    def get(self, request, *args, **kwargs):
+        shop = request.user.shop
         serializer = ShopDetailSerializer(shop)
         return Response(serializer.data)
 
