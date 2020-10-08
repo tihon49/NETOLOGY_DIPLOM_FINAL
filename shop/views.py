@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.permissions import IsShopOwnerOrReadOnly
-from shop.models import Shop #Category
-from shop.serializers import ShopDetailSerializer, ShopCreteSerializer, ShopsListSerializer
+from shop.models import Shop, Category
+from shop.serializers import ShopDetailSerializer, ShopCreteSerializer, ShopsListSerializer, CategorySerializer
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 
@@ -34,6 +34,6 @@ class ShopDetailView(APIView):
 #     permission_classes = (IsShopOwnerOrReadOnly,)
 
 
-# class CategoryView(generics.ListAPIView):
-#     serializer_class = CategorySerializer
-#     queryset = Category.objects.all()
+class CategoryListView(generics.ListAPIView):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()

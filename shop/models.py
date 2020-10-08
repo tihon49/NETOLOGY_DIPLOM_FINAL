@@ -20,18 +20,18 @@ class Shop(models.Model):
         return self.name
 
 
-# class Category(models.Model):
-#     name = models.CharField(max_length=40, verbose_name='Название')
-#     shops = models.ManyToManyField(Shop, verbose_name='Магазины', related_name='categories',
-#                                    blank=True, related_query_name='shops')
-#
-#     class Meta:
-#         verbose_name = 'Категория'
-#         verbose_name_plural = "Категории"
-#         ordering = ('-name',)
-#
-#     def __str__(self):
-#         return self.name
+class Category(models.Model):
+    name = models.CharField(max_length=40, verbose_name='Название')
+    shops = models.ManyToManyField(Shop, verbose_name='Магазины', related_name='categories',
+                                   blank=True, related_query_name='shops')
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = "Категории"
+        ordering = ('-name',)
+
+    def __str__(self):
+        return self.name
 
 
 # class Product(models.Model):
