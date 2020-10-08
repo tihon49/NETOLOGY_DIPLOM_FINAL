@@ -41,11 +41,11 @@ class ShopDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'url', 'state', 'user']
 
 
-# class ShopsListSerializer(serializers.ModelSerializer):
-#     user = serializers.SlugRelatedField(slug_field='email', read_only=True)
-#     # categories = CategorySerializer(many=True)
-#     product_infos = ProductInfoSerializer(many=True)
-#
-#     class Meta:
-#         model = Shop
-#         fields = ['id', 'name', 'state', 'url', 'user', 'product_infos']
+class ShopsListSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(slug_field='email', read_only=True)
+    # categories = CategorySerializer(many=True)
+    # product_infos = ProductInfoSerializer(many=True)
+
+    class Meta:
+        model = Shop
+        fields = ['id', 'name', 'state', 'url', 'user']

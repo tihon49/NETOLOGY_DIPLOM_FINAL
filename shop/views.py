@@ -2,20 +2,20 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import IsShopOwnerOrReadOnly, IsShop
+from api.permissions import IsShopOwnerOrReadOnly
 from shop.models import Shop #Category
-from shop.serializers import ShopDetailSerializer, ShopCreteSerializer
+from shop.serializers import ShopDetailSerializer, ShopCreteSerializer, ShopsListSerializer
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 
 class ShopCreateView(generics.CreateAPIView):
     serializer_class = ShopCreteSerializer
-    permission_classes = (IsAuthenticated, IsShop)
+    permission_classes = (IsAuthenticated,)
 
 
-# class ShopsListView(generics.ListAPIView):
-#     queryset = Shop.objects.all()
-#     serializer_class = ShopsListSerializer
+class ShopsListView(generics.ListAPIView):
+    queryset = Shop.objects.all()
+    serializer_class = ShopsListSerializer
 #     permission_classes = (IsAdminUser,)
 
 
@@ -28,10 +28,10 @@ class ShopDetailView(APIView):
 
 
 # https://www.youtube.com/watch?v=C6S3dMt1s_M&t=5074s   at 1:24:55
-class ShopUpdateView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ShopDetailSerializer
-    queryset = Shop.objects.all()
-    permission_classes = (IsShopOwnerOrReadOnly,)
+# class ShopUpdateView(generics.RetrieveUpdateDestroyAPIView):
+#     serializer_class = ShopDetailSerializer
+#     queryset = Shop.objects.all()
+#     permission_classes = (IsShopOwnerOrReadOnly,)
 
 
 # class CategoryView(generics.ListAPIView):

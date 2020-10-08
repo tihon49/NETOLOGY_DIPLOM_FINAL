@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     #MY APPS
     'accounts',
     'api',
-    # 'shop',
+    'shop',
 
 ]
 
