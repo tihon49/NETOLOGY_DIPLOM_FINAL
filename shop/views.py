@@ -2,7 +2,6 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import IsShopOwnerOrReadOnly
 from shop.models import Shop, Category
 from shop.serializers import ShopDetailSerializer, ShopCreteSerializer, ShopsListSerializer, CategorySerializer
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -35,8 +34,12 @@ class ShopDetailView(APIView):
             data['request'] = f'Shop {shop} successfully updated'
         else:
             raise serializer.errors
-
         return Response(data)
+
+    def delete(self, request):
+        shop = request.user.shop
+        shop.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # https://www.youtube.com/watch?v=C6S3dMt1s_M&t=5074s   at 1:24:55
