@@ -1,9 +1,13 @@
-# # Верстальщик
-# from rest_framework import serializers
-#
-# from .models import User, Category, Shop, ProductInfo, Product, ProductParameter, OrderItem, Order, Contact
-#
-#
+# Верстальщик
+from rest_framework import serializers
+
+from accounts.models import User #Category, Shop, ProductInfo, Product, ProductParameter, OrderItem, Order, Contact
+
+
+
+
+
+
 # class ContactSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Contact
@@ -12,8 +16,8 @@
 #         extra_kwargs = {
 #             'user': {'write_only': True}
 #         }
-#
-#
+
+
 # class UserSerializer(serializers.ModelSerializer):
 #     contacts = ContactSerializer(read_only=True, many=True)
 #
