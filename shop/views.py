@@ -21,10 +21,22 @@ class ShopsListView(generics.ListAPIView):
 
 class ShopDetailView(APIView):
     def get(self, request, *args, **kwargs):
-        print(request.user)
         shop = request.user.shop
         serializer = ShopDetailSerializer(shop)
         return Response(serializer.data)
+
+    def put(self, request):
+        shop = request.user.shop
+        serializer = ShopDetailSerializer(shop, request.data)
+
+        data = {}
+        if serializer.is_valid():
+            serializer.save()
+            data['request'] = f'Shop {shop} successfully updated'
+        else:
+            raise serializer.errors
+
+        return Response(data)
 
 
 # https://www.youtube.com/watch?v=C6S3dMt1s_M&t=5074s   at 1:24:55
