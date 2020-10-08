@@ -15,7 +15,7 @@ class ShopCreateView(generics.CreateAPIView):
 class ShopsListView(generics.ListAPIView):
     queryset = Shop.objects.all()
     serializer_class = ShopsListSerializer
-#     permission_classes = (IsAdminUser,)
+    # permission_classes = (IsAdminUser,)
 
 
 class ShopDetailView(APIView):
@@ -52,3 +52,8 @@ class ShopDetailView(APIView):
 class CategoryListView(generics.ListAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+
+
+class ProductListView(APIView):
+    def get(self, request):
+        pass
