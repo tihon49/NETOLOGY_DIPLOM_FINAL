@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     #MY APPS
     'accounts',
     'api',
+    'shop',
 
 ]
 
@@ -83,7 +84,7 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 40,
+    'PAGE_SIZE': 5, #https://www.youtube.com/watch?v=O79lhytiKd0&t=573s
 
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -95,6 +96,19 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
+
+    'DEFAULT_PERMISSIONS_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+}
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SERIALIZERS': {
+        'user_create': 'accounts.serializers.UserCreateSerializer',
+        'user': 'accounts.serializers.UserCreateSerializer',
+    }
 }
 
 AUTH_USER_MODEL = 'accounts.User'
