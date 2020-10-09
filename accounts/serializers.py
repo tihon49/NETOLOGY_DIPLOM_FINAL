@@ -1,6 +1,6 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import  serializers
-from .models import User
+from .models import User, Contact
 
 
 class UserCreateSerializer(UserCreateSerializer):
@@ -31,3 +31,12 @@ class UserRegSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Contact
+        fields = ['id', 'city', 'street', 'house', 'structure', "building",
+                  "apartment", "phone", "user"]

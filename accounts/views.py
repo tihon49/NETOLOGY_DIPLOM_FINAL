@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from rest_framework.decorators import permission_classes
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
 
-from .serializers import UserRegSerializer
+from .models import Contact
+from .serializers import UserRegSerializer, ContactSerializer
 
 
 def profileView(request):
@@ -39,4 +41,23 @@ class RegistrationView(APIView):
             data['user'] = user.email
         else:
             data = serializer.errors
+        return Response(data)
+
+
+class ContactView(APIView):
+    def get(self, request):
+        contacts = request.user.contacts.first()
+        serializer = ContactSerializer(contacts)
+        return Response(serializer.data)
+
+    def put(self, request):
+        contacts = request.user.contacts.first()
+        serializer = ContactSerializer(contacts, request.data)
+        data = {}
+        if serializer.is_valid():
+            serializer.save()
+            data['response'] = f'Successfully updated user ({request.user}) contacts'
+            data['data'] = serializer.data
+        else:
+            raise serializer.errors
         return Response(data)
