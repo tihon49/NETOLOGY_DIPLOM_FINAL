@@ -55,32 +55,32 @@ class Product(models.Model):
         ]
 
     def __str__(self):
+        return f'{self.name} {self.model} | Shop: {self.shop}'
+
+
+class Parameter(models.Model):
+    name = models.CharField(max_length=40, verbose_name='Название')
+
+    class Meta:
+        verbose_name = 'Имя параметра'
+        verbose_name_plural = "Имена параметров"
+        ordering = ('-name',)
+
+    def __str__(self):
         return self.name
 
-#
-# class Parameter(models.Model):
-#     name = models.CharField(max_length=40, verbose_name='Название')
-#
-#     class Meta:
-#         verbose_name = 'Имя параметра'
-#         verbose_name_plural = "Имена параметров"
-#         ordering = ('-name',)
-#
-#     def __str__(self):
-#         return self.name
 
+class ProductParameter(models.Model):
+    product_info = models.ForeignKey(Product, verbose_name='Информация о продукте',
+                                     related_name='product_info_parameters', blank=True,
+                                     on_delete=models.CASCADE)
+    parameter = models.ForeignKey(Parameter, verbose_name='Параметр', related_name='product_parameters', blank=True,
+                                  on_delete=models.CASCADE)
+    value = models.CharField(verbose_name='Значение', max_length=100)
 
-# class ProductParameter(models.Model):
-#     product_info = models.ForeignKey(Product, verbose_name='Информация о продукте',
-#                                      related_name='product_parameters', blank=True,
-#                                      on_delete=models.CASCADE)
-#     parameter = models.ForeignKey(Parameter, verbose_name='Параметр', related_name='product_parameters', blank=True,
-#                                   on_delete=models.CASCADE)
-#     value = models.CharField(verbose_name='Значение', max_length=100)
-#
-#     class Meta:
-#         verbose_name = 'Параметр'
-#         verbose_name_plural = "Параметры"
-#         constraints = [
-#             models.UniqueConstraint(fields=['product_info', 'parameter'], name='unique_product_parameter'),
-#         ]
+    class Meta:
+        verbose_name = 'Параметр'
+        verbose_name_plural = "Параметры"
+        constraints = [
+            models.UniqueConstraint(fields=['product_info', 'parameter'], name='unique_product_parameter'),
+        ]

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from shop.models import Shop, Category, Product
+from .models import Shop, Category, Product, Parameter, ProductParameter
 
 
 @admin.register(Shop)
@@ -16,14 +16,14 @@ class ShopAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ShopAdmin(admin.ModelAdmin):
+    list_display = ['name', 'model', 'external_id', 'shop', 'quantity', 'price', 'price_rrc']
+
+
+@admin.register(Parameter)
+class ShopAdmin(admin.ModelAdmin):
     pass
 
 
-# @admin.register(Parameter)
-# class ShopAdmin(admin.ModelAdmin):
-#     pass
-#
-#
-# @admin.register(ProductParameter)
-# class ShopAdmin(admin.ModelAdmin):
-#     pass
+@admin.register(ProductParameter)
+class ShopAdmin(admin.ModelAdmin):
+    pass
