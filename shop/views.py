@@ -1,8 +1,8 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
-
 
 from shop.models import Shop, Category, Product
 from shop.serializers import (ShopDetailSerializer, ShopCreteSerializer,
@@ -57,26 +57,27 @@ class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
 
 
-class ProductListView(APIView):
-    def get(self, request):
-        pass
+class ProductListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+    pagination_class = PageNumberPagination
 
 
-class ProductView(APIView):
-    def get(self, request, *args, **kwargs):
-        query = Q(shop__state=True)
-        shop_id = request.query_params.get('shop_id')
-        category_id = request.query_params.get('category_id')
-
-        if shop_id:
-            query = query & Q(shop_id=shop_id)
-            print(query)
-
-        if category_id:
-            query = query & Q(category_id=category_id)
-
-        queryset = Product.objects.filter(query).select_related(
-                                              'shop', 'category').prefetch_related(
-                                                    'product_info_parameters').distinct()
-        serializer = ProductSerializer(queryset, many=True)
-        return Response(serializer.data)
+# class ProductView(APIView):
+#     def get(self, request, *args, **kwargs):
+#         query = Q(shop__state=True)
+#         shop_id = request.query_params.get('shop_id')
+#         category_id = request.query_params.get('category_id')
+#
+#         if shop_id:
+#             query = query & Q(shop_id=shop_id)
+#             print(query)
+#
+#         if category_id:
+#             query = query & Q(category_id=category_id)
+#
+#         queryset = Product.objects.filter(query).select_related(
+#             'shop', 'category').prefetch_related(
+#             'product_info_parameters').distinct()
+#         serializer = ProductSerializer(queryset, many=True)
+#         return Response(serializer.data)
