@@ -44,21 +44,29 @@ class RegistrationView(APIView):
         return Response(data)
 
 
+@permission_classes([IsAuthenticated])
 class ContactView(APIView):
     def get(self, request):
-        contacts = request.user.contacts.first()
-        serializer = ContactSerializer(contacts)
+        try:
+            contact = Contact.objects.get(user=request.user)
+            serializer = ContactSerializer(contact)
+        except:
+            return Response({'response': f'{request.user} has no contacts',
+                             'help': 'You should provide data like below:',
+                             'city': 'New York',
+                             'street': 'Lenina',
+                             'house': 25,
+                             'structure': 2,
+                             'building': 1,
+                             'apartment': 117,
+                             'phone': 88005355555})
         return Response(serializer.data)
 
     def put(self, request):
-        contacts = request.user.contacts.first()
-        serializer = ContactSerializer(contacts, request.data)
-        data = {}
+        contact, _ = Contact.objects.get_or_create(user=request.user)
+        serializer = ContactSerializer(contact, request.data)
         if serializer.is_valid():
             serializer.save()
-            data['response'] = f'Successfully updated user ({request.user}) contacts'
-            data['type'] = request.user.type
-            data['data'] = serializer.data
         else:
             raise serializer.errors
-        return Response(data)
+        return Response(serializer.data)
