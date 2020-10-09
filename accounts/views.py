@@ -57,6 +57,7 @@ class ContactView(APIView):
         if serializer.is_valid():
             serializer.save()
             data['response'] = f'Successfully updated user ({request.user}) contacts'
+            data['type'] = request.user.type
             data['data'] = serializer.data
         else:
             raise serializer.errors
