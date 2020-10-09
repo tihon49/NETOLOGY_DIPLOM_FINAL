@@ -26,4 +26,5 @@ class ShopAdmin(admin.ModelAdmin):
 
 @admin.register(ProductParameter)
 class ShopAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['product_info', 'parameter', 'value']
+    list_filter = ['product_info', 'parameter']
