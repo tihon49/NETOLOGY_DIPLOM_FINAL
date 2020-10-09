@@ -12,20 +12,21 @@ class RecursiveField(serializers.Serializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     shop = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    category = serializers.SlugRelatedField(slug_field='name', read_only=True)
+
 
     class Meta:
         model = Product
-        fields = ['name', 'model', 'quantity', 'price_rrc', 'shop']
+        fields = ['id', 'category', 'shop', 'name', 'model', 'quantity', 'price_rrc']
 
 
 class CategorySerializer(serializers.ModelSerializer):
     # shop = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     # products = RecursiveField(many=True, read_only=True)
-    products = ProductSerializer(read_only=True, many=True)
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'products']
+        fields = ['id', 'name']
 
 
 class ShopCreteSerializer(serializers.ModelSerializer):
@@ -40,10 +41,11 @@ class ShopDetailSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(slug_field='email', read_only=True)
     categories = CategorySerializer(read_only=True, many=True)
     # categories = RecursiveField(read_only=True, many=True)
+    products_info = ProductSerializer(read_only=True, many=True)
 
     class Meta:
         model = Shop
-        fields = ['id', 'name', 'url', 'state', 'user', 'categories']
+        fields = ['id', 'name', 'url', 'state', 'user', 'categories', 'products_info']
 
 
 class ShopsListSerializer(serializers.ModelSerializer):
@@ -54,4 +56,3 @@ class ShopsListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'state', 'url', 'user']
 
 
-#TODO: сейчас выводятся все продукты из связвнной категории, а надо чтобы выводилист только те продукты, которые связаны с конкретным магазином
