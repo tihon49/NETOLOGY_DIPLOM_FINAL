@@ -58,10 +58,6 @@ class ItemInOrder(models.Model):
     def __str__(self):
         return str(self.product_name)
 
-    # def save(self, *args, **kwargs):
-    #     self.total_price = self.price_per_item * self.quantity
-    #     super(ItemInOrder, self).save(*args, **kwargs)
-
     def save(self, *args, **kwargs):
         price_per_item = self.product_name.price
         self.price_per_item = price_per_item
