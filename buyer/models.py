@@ -1,5 +1,6 @@
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 from shop.models import Category, Shop, Product
 from accounts.models import User, Contact
@@ -66,8 +67,9 @@ class ItemInOrder(models.Model):
         super(ItemInOrder, self).save(*args, **kwargs)
 
 
-# source: https://www.youtube.com/watch?v=3wFpyKcVT_w&list=PLSWnD6rL-m9adebgpvvOLH5ASGJiznWdg&index=7
-# 17:25
+# 1) source: https://www.youtube.com/watch?v=3wFpyKcVT_w&list=PLSWnD6rL-m9adebgpvvOLH5ASGJiznWdg&index=7  17:25
+# 2) source: https://www.youtube.com/watch?v=Kc1Q_ayAeQk
+@receiver(post_save, sender=ItemInOrder)
 def item_in_order_post_save(sender, instance, created, **kwargs):
     '''функция перезаписи данных в модели товара в заказе'''
     all_items_in_order = ItemInOrder.objects.filter(order=instance.order)
@@ -75,6 +77,25 @@ def item_in_order_post_save(sender, instance, created, **kwargs):
     total_items_count_in_order = 0
 
     for item in all_items_in_order:
+        #обновляем кол-во и общую стоимость товаров
+        order_total_price += item.total_price
+        total_items_count_in_order += item.quantity
+
+    instance.order.total_price = order_total_price
+    instance.order.total_items_count = total_items_count_in_order
+    instance.order.save(force_update=True)
+# post_save.connect(item_in_order_post_save, sender=ItemInOrder)
+
+
+@receiver(post_delete, sender=ItemInOrder)
+def item_in_order_post_delete(sender, instance, created=False, **kwargs):
+    '''функция обновления цены и кол-ва товара в заказе при удалении из него какой-то позиции'''
+    all_items_in_order = ItemInOrder.objects.filter(order=instance.order)
+    order_total_price = 0
+    total_items_count_in_order = 0
+
+    for item in all_items_in_order:
+        # обновляем кол-во и общую стоимость товаров
         order_total_price += item.total_price
         total_items_count_in_order += item.quantity
 
@@ -83,4 +104,3 @@ def item_in_order_post_save(sender, instance, created, **kwargs):
     instance.order.save(force_update=True)
 
 
-post_save.connect(item_in_order_post_save, sender=ItemInOrder)
