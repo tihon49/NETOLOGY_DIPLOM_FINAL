@@ -1,18 +1,20 @@
-from rest_framework import generics, status
+from pprint import pprint
+
+from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
-from django.db.models import Q
 
+from api.permissions import IsShopOwnerOrReadOnly, IsShop
 from shop.models import Shop, Category, Product
 from shop.serializers import (ShopDetailSerializer, ShopCreteSerializer,
-                              ShopsListSerializer, CategorySerializer, ProductSerializer)
+                              ShopsListSerializer, CategorySerializer, ProductSerializer, ShopBaseSerializer)
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 
 class ShopCreateView(generics.CreateAPIView):
     serializer_class = ShopCreteSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsShop)
 
 
 class ShopsListView(generics.ListAPIView):
@@ -21,15 +23,23 @@ class ShopsListView(generics.ListAPIView):
     # permission_classes = (IsAdminUser,)
 
 
-class ShopDetailView(APIView):
+class ShopDetailView(viewsets.ModelViewSet):
+    serializer_class = ShopDetailSerializer
+
+    def get_queryset(self):
+        shop = Shop.objects.filter(user=self.request.user)
+        return shop
+
+
+class ShopBaseView(APIView):
     def get(self, request, *args, **kwargs):
         shop = request.user.shop
-        serializer = ShopDetailSerializer(shop)
+        serializer = ShopBaseSerializer(shop)
         return Response(serializer.data)
 
     def put(self, request):
         shop = request.user.shop
-        serializer = ShopDetailSerializer(shop, request.data)
+        serializer = ShopBaseSerializer(shop, request.data)
 
         data = {}
         if serializer.is_valid():
@@ -61,7 +71,6 @@ class ProductListView(generics.ListAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     pagination_class = PageNumberPagination
-
 
 # class ProductView(APIView):
 #     def get(self, request, *args, **kwargs):

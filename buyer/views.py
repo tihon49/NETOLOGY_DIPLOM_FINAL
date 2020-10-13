@@ -1,10 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from buyer.models import Order, ItemInOrder
-from buyer.serializers import OrderSerializer, OrderItemSerializer
+from buyer.serializers import OrderSerializer, OrderItemSerializer, OrderItemAddSerializer
 
 
 class OrderSerializerView(APIView):
@@ -18,9 +18,10 @@ class OrderSerializerView(APIView):
         except ObjectDoesNotExist:
             return Response({f'Уважаемый {request.user}, Ваша корзина пока пуста.'})
 
-    def put(self, request):
-        print(request.data)
-        return None
+
+class AddItemInOrderView(generics.CreateAPIView):
+    '''добавление товара в заказ'''
+    serializer_class = OrderItemAddSerializer
 
 
 class ItemsInOrderView(viewsets.ModelViewSet):
