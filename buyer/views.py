@@ -19,23 +19,15 @@ class OrderSerializerView(APIView):
             return Response({f'Уважаемый {request.user}, Ваша корзина пока пуста.'})
 
 
-class AddItemInOrderView2(generics.CreateAPIView):
+class AddItemInOrderView(generics.CreateAPIView):
+    '''добавить товар в заказ'''
     serializer_class = OrderItemAddSerializer
-
-
-class AddItemInOrderView(viewsets.ModelViewSet):
-    '''добавление товара в заказ'''
-    serializer_class = OrderItemAddSerializer
-
-    def get_queryset(self):
-        order = Order.objects.get(user=self.request.user)
-        items = ItemInOrder.objects.filter(order=order)
-        return items
-# TODO: сделать добавление нового товара в заказ
+#TODO: автодобавление модели заказа
 
 
 class ItemsInOrderView(viewsets.ModelViewSet):
     '''вывод заказанных товаров из заказа/корзины'''
     serializer_class = OrderItemSerializer
     queryset = ItemInOrder.objects.all()
+
 

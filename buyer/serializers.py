@@ -20,17 +20,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = ItemInOrder
         fields = ['id', 'external_id', 'category', 'shop', 'product_name', 'quantity',
                   'price_per_item', 'total_price']
-        read_only_fields = ['id', 'external_id', 'price_per_item', 'total_price']
+        read_only_fields = ['id', 'price_per_item', 'total_price']
 
 
 class OrderItemAddSerializer(serializers.ModelSerializer):
-    # product_name = serializers.StringRelatedField()
-
     class Meta:
         model = ItemInOrder
-        fields = ['external_id', 'product_name', 'quantity', 'price_per_item',
-                  'total_price', 'category', 'shop', 'order']
-        read_only_fields = ['price_per_item', 'total_price']
+        fields = ['external_id', 'product_name', 'quantity', 'order']
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
