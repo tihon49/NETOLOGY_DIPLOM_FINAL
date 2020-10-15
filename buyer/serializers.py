@@ -24,7 +24,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderItemAddSerializer(serializers.ModelSerializer):
-    order = serializers.StringRelatedField(read_only=True)
+    # product_name = serializers.StringRelatedField()
 
     class Meta:
         model = ItemInOrder

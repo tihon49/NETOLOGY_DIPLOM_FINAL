@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 class ShopCreateView(generics.CreateAPIView):
     serializer_class = ShopCreteSerializer
     permission_classes = (IsAuthenticated, IsShop)
+#TODO: заставить работать пермишн IsShop
 
 
 class ShopsListView(generics.ListAPIView):
