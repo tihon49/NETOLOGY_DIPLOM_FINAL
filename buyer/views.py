@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Order, ItemInOrder
-from .serializers import OrderSerializer, OrderItemSerializer, OrderItemAddSerializer
+from .serializers import OrderSerializer, OrderItemSerializer, OrderItemAddSerializer, OrderCreateSerializer
 
 
 class OrderSerializerView(APIView):
@@ -16,13 +16,18 @@ class OrderSerializerView(APIView):
             serializer = OrderSerializer(order)
             return Response(serializer.data)
         except ObjectDoesNotExist:
-            return Response({f'Уважаемый {request.user}, Ваша корзина пока пуста.'})
+            return Response({'response': f'Уважаемый {request.user}, Ваша корзина пока пуста.',
+                             'help_info': 'Перейдите по ссылке http://127.0.0.1:8000/api/v1/cart/create/'})
+
+class OrderCreateView(viewsets.ModelViewSet):
+    '''создать заказ'''
+    serializer_class = OrderCreateSerializer
+    queryset = Order.objects.all()
 
 
 class AddItemInOrderView(generics.CreateAPIView):
     '''добавить товар в заказ'''
     serializer_class = OrderItemAddSerializer
-#TODO: автодобавление модели заказа
 
 
 class ItemsInOrderView(viewsets.ModelViewSet):

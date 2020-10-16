@@ -26,7 +26,16 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderItemAddSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemInOrder
-        fields = ['external_id', 'product_name', 'quantity', 'order']
+        fields = ['external_id', 'category',  'shop', 'product_name', 'quantity', 'order']
+
+
+class OrderCreateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+        read_only_fields = ['status', 'contact', 'total_price', 'total_items_count']
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):

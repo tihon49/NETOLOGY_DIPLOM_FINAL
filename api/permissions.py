@@ -2,7 +2,7 @@ from rest_framework import permissions
 
 
 class IsShop(permissions.BasePermission):
-    message = 'You must be a Shop type user.'
+    message = 'Данный функционал доступен только представителям магазинов.'
 
     def has_permission(self, request, view):
         return request.user.type == 'shop'

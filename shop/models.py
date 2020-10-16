@@ -56,7 +56,7 @@ class Product(models.Model):
 
     def __str__(self):
         # return self.name
-        return f'{self.name} {self.model} | Shop: {self.shop}'
+        return f'{self.name} | model: {self.model} | Shop: {self.shop}'
 
 
 class Parameter(models.Model):
