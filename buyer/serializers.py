@@ -6,19 +6,21 @@ from .models import Order, ItemInOrder
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    shop = serializers.StringRelatedField()
+
     class Meta:
         model = Product
-        fields = ['name']
+        fields = ['name', 'model', 'shop']
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    shop = serializers.StringRelatedField()
+    # shop = serializers.StringRelatedField()
     category = serializers.StringRelatedField()
     product_name = ProductSerializer(read_only=True)
 
     class Meta:
         model = ItemInOrder
-        fields = ['id', 'external_id', 'category', 'shop', 'product_name', 'quantity',
+        fields = ['id', 'external_id', 'category', 'product_name', 'quantity',
                   'price_per_item', 'total_price']
         read_only_fields = ['id', 'price_per_item', 'total_price']
 
@@ -26,7 +28,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderItemAddSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemInOrder
-        fields = ['external_id', 'category',  'shop', 'product_name', 'quantity', 'order']
+        fields = ['external_id', 'category', 'product_name', 'quantity', 'order']
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
