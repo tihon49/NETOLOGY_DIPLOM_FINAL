@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from buyer.models import ItemInOrder
 from .models import Shop, Category, Product, Parameter, ProductParameter
 
 
@@ -28,6 +29,7 @@ class ProductSerializer(serializers.ModelSerializer):
     shop = serializers.StringRelatedField(read_only=True)
     category = serializers.StringRelatedField()
     product_info_parameters = ProductParameterSerializer(read_only=True, many=True)
+    name = serializers.StringRelatedField()
 
     class Meta:
         model = Product
@@ -44,6 +46,8 @@ class ShopCreteSerializer(serializers.ModelSerializer):
 
 
 class ShopBaseSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+
     class Meta:
         model = Shop
         fields = ['id', 'name', 'url', 'user']
@@ -68,3 +72,9 @@ class ShopsListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'state', 'url', 'user']
 
 
+class ShopOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ItemInOrder
+        fields = ['id', 'external_id', 'quantity', 'total_price',
+                  'order', 'category', 'shop', 'product_name']

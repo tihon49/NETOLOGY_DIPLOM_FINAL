@@ -7,9 +7,11 @@ from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 
 from api.permissions import IsShopOwnerOrReadOnly, IsShop
+from buyer.models import ItemInOrder
 from shop.models import Shop, Category, Product
 from shop.serializers import (ShopDetailSerializer, ShopCreteSerializer,
-                              ShopsListSerializer, CategorySerializer, ProductSerializer, ShopBaseSerializer)
+                              ShopsListSerializer, CategorySerializer, ProductSerializer, ShopBaseSerializer,
+                              ShopOrderSerializer)
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 
@@ -85,3 +87,14 @@ class ProductListView(generics.ListAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     pagination_class = PageNumberPagination
+
+
+class ShopOrdersView(viewsets.ModelViewSet):
+    serializer_class = ShopOrderSerializer
+    queryset = ItemInOrder.objects.all()
+
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     shop = Shop.objects.get(user=user)
+    #     items = ItemInOrder.objects.filter(shop=shop)
+    #     return items

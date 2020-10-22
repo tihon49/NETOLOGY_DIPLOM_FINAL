@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
-from shop.models import Category, Shop, Product
+from shop.models import Category, Shop, Product, Brand
 from accounts.models import User, Contact
 
 STATE_CHOICES = (
@@ -42,8 +42,9 @@ class ItemInOrder(models.Model):
     category = models.ForeignKey(Category, verbose_name='Категория товара', blank=True, null=True,
                                  on_delete=models.SET_NULL)
     shop = models.ForeignKey(Shop, verbose_name='магазин', blank=True, null=True, on_delete=models.SET_NULL)
-    product_name = models.ForeignKey(Product, verbose_name='Товар', related_name='itemsInOrder',
+    product_name = models.ForeignKey(Brand, verbose_name='Торговая марка', related_name='itemsInOrder',
                                      on_delete=models.CASCADE, blank=True)
+    model = models.CharField('Модель', max_length=80)
     external_id = models.PositiveIntegerField(verbose_name='Внешний ИД', blank=True)
     quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
     price_per_item = models.DecimalField(default=0, max_digits=10, decimal_places=2, verbose_name='Цена за единицу')
@@ -60,7 +61,9 @@ class ItemInOrder(models.Model):
         return str(self.product_name)
 
     def save(self, *args, **kwargs):
-        price_per_item = self.product_name.price
+        product = Product.objects.get(name=self.product_name, shop=self.shop, model=self.model)
+
+        price_per_item = product.price
         self.price_per_item = price_per_item
         self.total_price = price_per_item * self.quantity
 

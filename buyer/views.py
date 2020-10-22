@@ -9,6 +9,7 @@ from .serializers import OrderSerializer, OrderItemSerializer, OrderItemAddSeria
 
 class OrderSerializerView(APIView):
     '''вывод заказа/корзины пользователя'''
+
     def get(self, request):
         user = request.user
         try:
@@ -18,6 +19,7 @@ class OrderSerializerView(APIView):
         except ObjectDoesNotExist:
             return Response({'response': f'Уважаемый {request.user}, Ваша корзина пока пуста.',
                              'help_info': 'Перейдите по ссылке http://127.0.0.1:8000/api/v1/cart/create/'})
+
 
 class OrderCreateView(viewsets.ModelViewSet):
     '''создать заказ'''
@@ -34,5 +36,3 @@ class ItemsInOrderView(viewsets.ModelViewSet):
     '''вывод заказанных товаров из заказа/корзины'''
     serializer_class = OrderItemSerializer
     queryset = ItemInOrder.objects.all()
-
-
