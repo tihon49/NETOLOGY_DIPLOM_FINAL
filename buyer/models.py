@@ -53,9 +53,9 @@ class ItemInOrder(models.Model):
     class Meta:
         verbose_name = 'Товар в заказе'
         verbose_name_plural = "Товары в заказе"
-        constraints = [
-            models.UniqueConstraint(fields=['order_id', 'product_name'], name='unique_order_item'),
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(fields=['order_id', 'product_name'], name='unique_order_item'),
+        # ]
 
     def __str__(self):
         return str(self.product_name)
