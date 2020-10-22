@@ -1,35 +1,58 @@
-from rest_framework import generics, status
+from pprint import pprint
+
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
-from django.db.models import Q
 
+from api.permissions import IsShopOwnerOrReadOnly, IsShop
+from buyer.models import ItemInOrder
 from shop.models import Shop, Category, Product
 from shop.serializers import (ShopDetailSerializer, ShopCreteSerializer,
-                              ShopsListSerializer, CategorySerializer, ProductSerializer)
+                              ShopsListSerializer, CategorySerializer, ProductSerializer, ShopBaseSerializer,
+                              ShopOrderSerializer)
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 
 class ShopCreateView(generics.CreateAPIView):
+    '''создание магазина'''
     serializer_class = ShopCreteSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsShop)
 
 
 class ShopsListView(generics.ListAPIView):
+    '''представление всех магазинов'''
     queryset = Shop.objects.all()
     serializer_class = ShopsListSerializer
     # permission_classes = (IsAdminUser,)
 
 
-class ShopDetailView(APIView):
+class ShopDetailView(viewsets.ModelViewSet):
+    '''детальное представление магазина'''
+    serializer_class = ShopDetailSerializer
+
+    def get_queryset(self):
+        shop = Shop.objects.filter(user=self.request.user)
+        return shop
+
+
+class ShopBaseView(APIView):
+    '''
+    базовое представление магазина с возможностью редактирования и удаления
+    '''
+
     def get(self, request, *args, **kwargs):
-        shop = request.user.shop
-        serializer = ShopDetailSerializer(shop)
-        return Response(serializer.data)
+        try:
+            shop = request.user.shop
+            serializer = ShopBaseSerializer(shop)
+            return Response(serializer.data)
+        except ObjectDoesNotExist:
+            return Response({'response': 'Shop does not exist'})
 
     def put(self, request):
         shop = request.user.shop
-        serializer = ShopDetailSerializer(shop, request.data)
+        serializer = ShopBaseSerializer(shop, request.data)
 
         data = {}
         if serializer.is_valid():
@@ -50,34 +73,28 @@ class ShopDetailView(APIView):
 #     serializer_class = ShopDetailSerializer
 #     queryset = Shop.objects.all()
 #     permission_classes = (IsShopOwnerOrReadOnly,)
+# тут у меня не заработало как надо....
 
 
 class CategoryListView(generics.ListAPIView):
+    '''все категории'''
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
 
 class ProductListView(generics.ListAPIView):
+    '''все товары'''
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     pagination_class = PageNumberPagination
 
 
-# class ProductView(APIView):
-#     def get(self, request, *args, **kwargs):
-#         query = Q(shop__state=True)
-#         shop_id = request.query_params.get('shop_id')
-#         category_id = request.query_params.get('category_id')
-#
-#         if shop_id:
-#             query = query & Q(shop_id=shop_id)
-#             print(query)
-#
-#         if category_id:
-#             query = query & Q(category_id=category_id)
-#
-#         queryset = Product.objects.filter(query).select_related(
-#             'shop', 'category').prefetch_related(
-#             'product_info_parameters').distinct()
-#         serializer = ProductSerializer(queryset, many=True)
-#         return Response(serializer.data)
+class ShopOrdersView(viewsets.ModelViewSet):
+    serializer_class = ShopOrderSerializer
+    queryset = ItemInOrder.objects.all()
+
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     shop = Shop.objects.get(user=user)
+    #     items = ItemInOrder.objects.filter(shop=shop)
+    #     return items

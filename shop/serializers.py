@@ -1,13 +1,14 @@
 from rest_framework import serializers
 
+from buyer.models import ItemInOrder
 from .models import Shop, Category, Product, Parameter, ProductParameter
 
 
-# class RecursiveField(serializers.Serializer):
-#     '''сериализатор для рекурсивного вывода вложенных данных'''
-#     def to_representation(self, instance):
-#         serializer = self.parent.parent.__class__(instance, context=self.context)
-#         return serializer.data
+class RecursiveField(serializers.Serializer):
+    '''сериализатор для рекурсивного вывода вложенных данных'''
+    def to_representation(self, instance):
+        serializer = self.parent.parent.__class__(instance, context=self.context)
+        return serializer.data
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -25,9 +26,10 @@ class ProductParameterSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    shop = serializers.StringRelatedField()
+    shop = serializers.StringRelatedField(read_only=True)
     category = serializers.StringRelatedField()
     product_info_parameters = ProductParameterSerializer(read_only=True, many=True)
+    name = serializers.StringRelatedField()
 
     class Meta:
         model = Product
@@ -43,15 +45,23 @@ class ShopCreteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ShopDetailSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(slug_field='email', read_only=True)
-    # categories = CategorySerializer(read_only=True, many=True)
-    # categories = RecursiveField(read_only=True, many=True)
-    # products_info = ProductSerializer(read_only=True, many=True)
+class ShopBaseSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
 
     class Meta:
         model = Shop
         fields = ['id', 'name', 'url', 'user']
+
+
+class ShopDetailSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(slug_field='email', read_only=True)
+    categories = CategorySerializer(read_only=True, many=True)
+    # categories = RecursiveField(read_only=True, many=True)
+    products_info = ProductSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Shop
+        fields = ['id', 'name', 'url', 'user', 'categories', 'products_info']
 
 
 class ShopsListSerializer(serializers.ModelSerializer):
@@ -60,3 +70,11 @@ class ShopsListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = ['id', 'name', 'state', 'url', 'user']
+
+
+class ShopOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ItemInOrder
+        fields = ['id', 'external_id', 'quantity', 'total_price',
+                  'order', 'category', 'shop', 'product_name']
