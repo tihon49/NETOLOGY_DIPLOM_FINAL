@@ -57,6 +57,7 @@ class CartConfirmView(APIView):
         try:
             order = Order.objects.get(user=user, status='В корзине')
             order.status = 'Подтвержден'
+            order.is_active = True
             order.save()
             return Response({'response': 'Ваш заказ подтвержден.'})
         except ObjectDoesNotExist:

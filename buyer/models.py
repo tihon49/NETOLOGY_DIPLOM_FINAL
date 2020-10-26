@@ -24,7 +24,7 @@ class Order(models.Model):
     total_items_count = models.IntegerField(verbose_name='Общее количество товаров в заказе', default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Заказ'

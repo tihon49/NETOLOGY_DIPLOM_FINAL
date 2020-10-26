@@ -96,6 +96,6 @@ class ShopOrdersView(viewsets.ModelViewSet):
     def get_queryset(self):
         shop_owner = self.request.user
         shop = Shop.objects.get(user=shop_owner)
-        items = ItemInOrder.objects.filter(shop=shop, order__status='Подтвержден')
+        items = ItemInOrder.objects.filter(shop=shop, order__is_active=True)
         return items
 
