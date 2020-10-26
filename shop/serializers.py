@@ -82,3 +82,4 @@ class ShopOrderSerializer(serializers.ModelSerializer):
         model = ItemInOrder
         fields = ['id', 'category', 'external_id', 'product_name', 'model', 'quantity', 'total_price',
                   'order', 'shop']
+

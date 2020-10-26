@@ -99,3 +99,8 @@ class ShopOrdersView(viewsets.ModelViewSet):
         items = ItemInOrder.objects.filter(shop=shop, order__is_active=True)
         return items
 
+
+class ShopOrderDetailView(generics.RetrieveAPIView):
+    pass
+
+#TODO: добавить магазину возможность менять статус заказа по ссылке: http://127.0.0.1:8000/api/v1/shop/orders/10/
