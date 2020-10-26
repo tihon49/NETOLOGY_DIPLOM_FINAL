@@ -21,6 +21,7 @@ class OrderItemAddSerializer(serializers.ModelSerializer):
         model = ItemInOrder
         fields = ['external_id', 'category', 'shop', 'product_name', 'model', 'quantity', 'order']
         # read_only_fields = ['order']
+#TODO: make order readonly
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
