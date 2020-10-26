@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 
-from buyer.views import OrderSerializerView, ItemsInOrderView, AddItemInOrderView, OrderCreateView
+from buyer.views import OrderSerializerView, ItemsInOrderView, AddItemInOrderView, OrderCreateView, CartConfirmView
 from shop.views import (ShopBaseView, ShopCreateView, ShopsListView,
                         CategoryListView, ProductListView, ShopDetailView, ShopDetailView, ShopOrdersView)
 
@@ -25,6 +25,7 @@ urlpatterns = [
 
     path('cart/', OrderSerializerView.as_view(), name='order'),
     path('cart/add/', AddItemInOrderView.as_view(), name='add_item_in_order'),
+    path('cart/confirm/', CartConfirmView.as_view(), name='cart_confirm'),
 ]
 
 urlpatterns += router.urls

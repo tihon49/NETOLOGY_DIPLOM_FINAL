@@ -20,6 +20,7 @@ class OrderItemAddSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemInOrder
         fields = ['external_id', 'category', 'shop', 'product_name', 'model', 'quantity', 'order']
+        # read_only_fields = ['order']
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
