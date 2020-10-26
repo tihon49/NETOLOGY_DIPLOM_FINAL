@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from buyer.models import ItemInOrder
+from buyer.models import ItemInOrder, Order
 from .models import Shop, Category, Product, Parameter, ProductParameter
 
 
@@ -73,8 +73,12 @@ class ShopsListSerializer(serializers.ModelSerializer):
 
 
 class ShopOrderSerializer(serializers.ModelSerializer):
+    order = serializers.StringRelatedField()
+    shop = serializers.StringRelatedField()
+    product_name = serializers.StringRelatedField()
+    category = serializers.StringRelatedField()
 
     class Meta:
         model = ItemInOrder
-        fields = ['id', 'external_id', 'quantity', 'total_price',
-                  'order', 'category', 'shop', 'product_name']
+        fields = ['id', 'category', 'external_id', 'product_name', 'model', 'quantity', 'total_price',
+                  'order', 'shop']

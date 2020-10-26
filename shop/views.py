@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 
 from api.permissions import IsShopOwnerOrReadOnly, IsShop
-from buyer.models import ItemInOrder
+from buyer.models import ItemInOrder, Order
 from shop.models import Shop, Category, Product
 from shop.serializers import (ShopDetailSerializer, ShopCreteSerializer,
                               ShopsListSerializer, CategorySerializer, ProductSerializer, ShopBaseSerializer,
@@ -93,8 +93,9 @@ class ShopOrdersView(viewsets.ModelViewSet):
     serializer_class = ShopOrderSerializer
     queryset = ItemInOrder.objects.all()
 
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     shop = Shop.objects.get(user=user)
-    #     items = ItemInOrder.objects.filter(shop=shop)
-    #     return items
+    def get_queryset(self):
+        shop_owner = self.request.user
+        shop = Shop.objects.get(user=shop_owner)
+        items = ItemInOrder.objects.filter(shop=shop, order__status='Подтвержден')
+        return items
+
