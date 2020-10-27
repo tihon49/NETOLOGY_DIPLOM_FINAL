@@ -1,35 +1,33 @@
-from pprint import pprint
-
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 
-from api.permissions import IsShopOwnerOrReadOnly, IsShop
+from api.permissions import IsShop
 from buyer.models import ItemInOrder, Order
 from shop.models import Shop, Category, Product
 from shop.serializers import (ShopDetailSerializer, ShopCreteSerializer,
                               ShopsListSerializer, CategorySerializer, ProductSerializer, ShopBaseSerializer,
                               ShopOrderSerializer)
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 
 
 class ShopCreateView(generics.CreateAPIView):
-    '''создание магазина'''
+    """создание магазина"""
     serializer_class = ShopCreteSerializer
     permission_classes = (IsAuthenticated, IsShop)
 
 
 class ShopsListView(generics.ListAPIView):
-    '''представление всех магазинов'''
+    """представление всех магазинов"""
     queryset = Shop.objects.all()
     serializer_class = ShopsListSerializer
     # permission_classes = (IsAdminUser,)
 
 
 class ShopDetailView(viewsets.ModelViewSet):
-    '''детальное представление магазина'''
+    """детальное представление магазина"""
     serializer_class = ShopDetailSerializer
 
     def get_queryset(self):
@@ -38,11 +36,12 @@ class ShopDetailView(viewsets.ModelViewSet):
 
 
 class ShopBaseView(APIView):
-    '''
+    """
     базовое представление магазина с возможностью редактирования и удаления
-    '''
+    """
 
-    def get(self, request, *args, **kwargs):
+    @staticmethod
+    def get(request):
         try:
             shop = request.user.shop
             serializer = ShopBaseSerializer(shop)
@@ -50,7 +49,8 @@ class ShopBaseView(APIView):
         except ObjectDoesNotExist:
             return Response({'response': 'Shop does not exist'})
 
-    def put(self, request):
+    @staticmethod
+    def put(request):
         shop = request.user.shop
         serializer = ShopBaseSerializer(shop, request.data)
 
@@ -62,7 +62,8 @@ class ShopBaseView(APIView):
             raise serializer.errors
         return Response(data)
 
-    def delete(self, request):
+    @staticmethod
+    def delete(request):
         shop = request.user.shop
         shop.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -77,13 +78,13 @@ class ShopBaseView(APIView):
 
 
 class CategoryListView(generics.ListAPIView):
-    '''все категории'''
+    """все категории"""
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
 
 class ProductListView(generics.ListAPIView):
-    '''все товары'''
+    """все товары"""
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     pagination_class = PageNumberPagination
@@ -97,10 +98,9 @@ class ShopOrdersView(viewsets.ModelViewSet):
         shop_owner = self.request.user
         shop = Shop.objects.get(user=shop_owner)
         items = ItemInOrder.objects.filter(shop=shop, order__is_active=True)
-        return items
+        order = Order.objects.all()
+        print(order)
+        return order
 
-
-class ShopOrderDetailView(generics.RetrieveAPIView):
-    pass
-
-#TODO: добавить магазину возможность менять статус заказа по ссылке: http://127.0.0.1:8000/api/v1/shop/orders/10/
+# TODO: фильтрацию заказов по магазину
+# TODO: добавить магазину возможность менять статус заказа по ссылке: http://127.0.0.1:8000/api/v1/shop/orders/10/

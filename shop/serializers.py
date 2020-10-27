@@ -73,13 +73,10 @@ class ShopsListSerializer(serializers.ModelSerializer):
 
 
 class ShopOrderSerializer(serializers.ModelSerializer):
-    order = serializers.StringRelatedField()
-    shop = serializers.StringRelatedField()
-    product_name = serializers.StringRelatedField()
-    category = serializers.StringRelatedField()
+    user = serializers.StringRelatedField()
+    contact = serializers.StringRelatedField()
 
     class Meta:
-        model = ItemInOrder
-        fields = ['id', 'category', 'external_id', 'product_name', 'model', 'quantity', 'total_price',
-                  'order', 'shop']
+        model = Order
+        exclude = ('is_active',)
 

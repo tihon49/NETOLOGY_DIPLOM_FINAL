@@ -26,6 +26,7 @@ class OrderItemAddSerializer(serializers.ModelSerializer):
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    contact = ContactSerializer
 
     class Meta:
         model = Order
