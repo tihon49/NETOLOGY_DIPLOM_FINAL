@@ -122,8 +122,8 @@ class ShopUpdateView(APIView):
         yaml_file = request.data.get('yaml_file')
 
         if yaml_file:
-            with open(yaml_file) as f:
-                data = load_yaml(f, Loader=Loader)
+            with open(yaml_file, 'rt', encoding='utf8') as f:
+                data = load_yaml(f)
                 pprint(data)
 
             shop, _ = Shop.objects.get_or_create(user_id=request.user.id, defaults={'name': data['shop']})
@@ -132,7 +132,7 @@ class ShopUpdateView(APIView):
                 category_object.shops.add(shop.id)
                 category_object.save()
 
-            print(Product.objects.filter(shop_id=shop.id))
+            pprint(Product.objects.filter(shop_id=shop.id))
 
             for item in data['goods']:
                 category_ = Category.objects.get(pk=item['category'])
@@ -161,5 +161,3 @@ class ShopUpdateView(APIView):
 
         return Response({'status': False, 'error': 'Не указаны необходимые поля'},
                         status=status.HTTP_400_BAD_REQUEST)
-
-# TODO: сделать так чтоб эта шляпа работала с файлом а не с урлом

@@ -1,11 +1,11 @@
-shop: M-Video
+shop: М-Видео
 categories:
   - id: 1
-    name: Phones
+    name: Телефоны
   - id: 2
-    name: Monitors
+    name: Мониторы
   - id: 3
-    name: Laptops
+    name: Ноутбуки
 
 goods:
   - id: 5216292
