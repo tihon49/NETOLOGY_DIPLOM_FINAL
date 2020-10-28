@@ -91,15 +91,13 @@ class ProductListView(generics.ListAPIView):
 
 
 class ShopOrdersView(viewsets.ModelViewSet):
+    """получаем заказы магазина с возможностью изменения статуса заказа"""
     serializer_class = ShopOrderSerializer
     queryset = ItemInOrder.objects.all()
 
     def get_queryset(self):
         shop_owner = self.request.user
         shop = Shop.objects.get(user=shop_owner)
-        items = ItemInOrder.objects.filter(shop=shop, order__is_active=True)
-        order = Order.objects.filter(is_active=True)
+        order = Order.objects.filter(is_active=True, ordered_items__shop=shop)
         return order
 
-# TODO: фильтрацию заказов по магазину
-# TODO: добавить магазину возможность менять статус заказа по ссылке: http://127.0.0.1:8000/api/v1/shop/orders/10/
