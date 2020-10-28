@@ -105,8 +105,9 @@ class ShopOrdersView(viewsets.ModelViewSet):
     def get_queryset(self):
         shop_owner = self.request.user
         shop = Shop.objects.get(user=shop_owner)
-        order = Order.objects.filter(is_active=True, ordered_items__shop=shop)
+        order = Order.objects.filter(ordered_items__shop=shop).exclude(status='В корзине')
         return order
+
 
 class ShopUpdateView(APIView):
     """

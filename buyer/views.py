@@ -28,10 +28,11 @@ class AddItemInOrderView(generics.CreateAPIView):
     serializer_class = OrderItemAddSerializer
 
     def get_queryset(self):
-        order = Order.objects.filter(user=self.request.user, status='В корзине')
-        # return order
+        order = Order.objects.get(user=self.request.user, status='В корзине')
+        order.contact = Contact.objects.get(user=self.request.user)
         item = ItemInOrder.objects.filter(order=order)
         return item
+    # TODO: добавление контакта юзера к модели заказа Order
 
 
 class ItemsInOrderView(viewsets.ModelViewSet):
