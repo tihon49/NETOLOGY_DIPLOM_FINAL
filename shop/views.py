@@ -136,8 +136,9 @@ class ShopUpdateView(APIView):
 
             for item in data['goods']:
                 category_ = Category.objects.get(pk=item['category'])
+                item_brand_name, _ = Brand.objects.get_or_create(name=item['name'])
                 product_ = Product.objects.create(
-                    name=item['name'],
+                    name=item_brand_name,
                     external_id=item['id'],
                     category=category_,
                     model=item['model'],
@@ -148,8 +149,8 @@ class ShopUpdateView(APIView):
                 for name, value in item['parameters'].items():
                     parameter_id_, _ = Parameter.objects.get_or_create(name=name)
                     ProductParameter.objects.create(
-                        product_id=product_.pk,
-                        parameter_id=parameter_id_.pk,
+                        product_info=Product.objects.get(pk=product_.pk),
+                        parameter=Parameter.objects.get(pk=parameter_id_.pk),
                         value=value)
 
             if shop.name != data['shop']:

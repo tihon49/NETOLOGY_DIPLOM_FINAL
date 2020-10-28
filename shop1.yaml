@@ -1,4 +1,4 @@
-shop: М-Видео
+shop: M-Video
 categories:
   - id: 1
     name: Phones
@@ -13,7 +13,7 @@ goods:
     model: redmi_9
     name: Xiaomi
     price: 11359
-    price_rrc: 13000
+    price_rrc: 13500
     quantity: 24
     parameters:
       "Диагональ (дюйм)": 6.53
