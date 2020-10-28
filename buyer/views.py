@@ -32,7 +32,6 @@ class AddItemInOrderView(generics.CreateAPIView):
         order.contact = Contact.objects.get(user=self.request.user)
         item = ItemInOrder.objects.filter(order=order)
         return item
-    # TODO: добавление контакта юзера к модели заказа Order
 
 
 class ItemsInOrderView(viewsets.ModelViewSet):

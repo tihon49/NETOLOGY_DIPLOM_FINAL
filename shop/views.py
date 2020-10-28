@@ -119,56 +119,44 @@ class ShopUpdateView(APIView):
         if request.user.type != 'shop':
             return Response({'status': False, 'error': 'Только для магазинов'}, status=status.HTTP_403_FORBIDDEN)
 
-        url = request.data.get('url')
-        print(url)
-        if url:
-            validate_url = URLValidator()
-            try:
-                validate_url(url)
-            except ValidationError as e:
-                return Response({'status': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                headers = {'Authorization': 'Token 94691a9e6afb4762cb97902d363bb69efc85c430'}
-                stream = requests.get(url, headers=headers)
+        yaml_file = request.data.get('yaml_file')
 
-                data = load_yaml(stream.content, Loader=Loader)
+        if yaml_file:
+            with open(yaml_file) as f:
+                data = load_yaml(f, Loader=Loader)
                 pprint(data)
 
-                shop, _ = Shop.objects.get_or_create(user_id=request.user.id,
-                                                     defaults={'name': data['name'], 'url': url})
-                for category in data['categories']:
-                    category_object, _ = Category.objects.get_or_create(id=category['id'], name=category['name'])
-                    category_object.shops.add(shop.id)
-                    category_object.save()
+            shop, _ = Shop.objects.get_or_create(user_id=request.user.id, defaults={'name': data['shop']})
+            for category in data['categories']:
+                category_object, _ = Category.objects.get_or_create(id=category['id'], name=category['name'])
+                category_object.shops.add(shop.id)
+                category_object.save()
 
-                for item in data['products_info']:
-                    category_ = Category.objects.get(name=item['category'])
-                    print(f'category: {category_}')
-                    name_ = Brand.objects.get(name=item['name'])
-                    print(f'name: {name_}')
-                    product_ = Product.objects.create(
-                        name= name_,
-                        external_id=item['id'],
-                        category=category_,
-                        model=item['model'],
-                        price=item['price'],
-                        price_rrc=item['price_rrc'],
-                        quantity=item['quantity'],
-                        shop_id=shop.pk)
-                    print(f'product: {product_}')
-                    for name, value in item['product_info_parameters'].items():
-                        print('\nhere\n')
-                        parameter_id_, _ = Parameter.objects.get_or_create(name=name)
-                        ProductParameter.objects.create(
-                            product_id=product_.pk,
-                            parameter_id=parameter_id_.pk,
-                            value=value)
+            print(Product.objects.filter(shop_id=shop.id))
 
-                if shop.name != data['name']:
-                    return Response({'status': False, 'error': 'В файле указано некорректное название магазина!'},
-                                    status=status.HTTP_400_BAD_REQUEST)
+            for item in data['goods']:
+                category_ = Category.objects.get(pk=item['category'])
+                product_ = Product.objects.create(
+                    name=item['name'],
+                    external_id=item['id'],
+                    category=category_,
+                    model=item['model'],
+                    price=item['price'],
+                    price_rrc=item['price_rrc'],
+                    quantity=item['quantity'],
+                    shop_id=shop.id)
+                for name, value in item['parameters'].items():
+                    parameter_id_, _ = Parameter.objects.get_or_create(name=name)
+                    ProductParameter.objects.create(
+                        product_id=product_.pk,
+                        parameter_id=parameter_id_.pk,
+                        value=value)
 
-                return Response({'status': True})
+            if shop.name != data['shop']:
+                return Response({'status': False, 'error': 'В файле указано некорректное название магазина!'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'status': True})
 
         return Response({'status': False, 'error': 'Не указаны необходимые поля'},
                         status=status.HTTP_400_BAD_REQUEST)
