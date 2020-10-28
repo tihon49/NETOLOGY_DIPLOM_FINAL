@@ -4,7 +4,7 @@ from rest_framework import routers
 from buyer.views import OrderSerializerView, ItemsInOrderView, AddItemInOrderView, OrderCreateView, CartConfirmView, \
     ContactView
 from shop.views import (ShopBaseView, ShopCreateView, ShopsListView,
-                        CategoryListView, ProductListView, ShopDetailView, ShopOrdersView)
+                        CategoryListView, ProductListView, ShopDetailView, ShopOrdersView, ShopUpdateView)
 
 router = routers.DefaultRouter()
 
@@ -19,7 +19,7 @@ urlpatterns = [
     path('shop/', ShopBaseView.as_view(), name='shop_detail'),
     path('shop/list/', ShopsListView.as_view(), name='shops_list_view'),
     path('shop/create/', ShopCreateView.as_view(), name='shop_create'),
-    # path('shop/orders/', ShopOrdersView.as_view(), 'shop_orders'),
+    path('shop/update/', ShopUpdateView.as_view(), name='shop_update'),
 
     path('category/', CategoryListView.as_view(), name='category_list'),
     path('products/', ProductListView.as_view(), name='products'),
