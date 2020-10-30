@@ -8,6 +8,9 @@ from rest_framework.pagination import PageNumberPagination
 
 from django.core.mail import send_mail
 
+from orders.celery import send_confirm_mail
+from orders.settings import EMAIL_HOST_USER
+
 from yaml import load as load_yaml
 
 from api.permissions import IsShop
@@ -108,10 +111,16 @@ class ShopOrdersView(viewsets.ModelViewSet):
 
         # отправка письма
         if self.request.method == 'PUT':
-            send_mail('Title', f'Заказ {order.first()}\nсменил статус на "{order.first().status}"',
-                      'test@gmail.com', ['tihon49@gmail.com'], fail_silently=False)
+            # send_mail('Title', f'Заказ {order.first()}\nсменил статус на "{order.first().status}"',
+            #           EMAIL_HOST_USER, ['tihon49@gmail.com'], fail_silently=False)
+            name = str(order.first().created)
+            status = self.request.data['status']
+            email = ['tihon49@gmail.com']
+            send_confirm_mail.delay({'name': name,
+                                     'status': status,
+                                     'email': email
+                                     })
         return order
-
 
 
 class ShopUpdateView(APIView):
