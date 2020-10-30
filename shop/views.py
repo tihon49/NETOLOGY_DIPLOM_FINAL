@@ -6,10 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 
-from django.core.exceptions import ValidationError
-from django.core.validators import URLValidator
-from yaml import load as load_yaml, Loader
-import requests
+from django.core.mail import send_mail
+
+from yaml import load as load_yaml
 
 from api.permissions import IsShop
 from buyer.models import ItemInOrder, Order
@@ -106,7 +105,13 @@ class ShopOrdersView(viewsets.ModelViewSet):
         shop_owner = self.request.user
         shop = Shop.objects.get(user=shop_owner)
         order = Order.objects.filter(ordered_items__shop=shop).exclude(status='В корзине')
+
+        # отправка письма
+        if self.request.method == 'PUT':
+            send_mail('Title', f'Заказ {order.first()}\nсменил статус на "{order.first().status}"',
+                      'test@gmail.com', ['tihon49@gmail.com'], fail_silently=False)
         return order
+
 
 
 class ShopUpdateView(APIView):
